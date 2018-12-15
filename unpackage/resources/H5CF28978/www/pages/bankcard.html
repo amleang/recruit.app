@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>我的补贴银行卡</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			* {
+				touch-action: pan-y;
+			}
+
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			.mui-bar-nav {
+				background: #39a9f0;
+			}
+
+			.mui-title {
+				color: #fff;
+			}
+
+			.content {
+				padding-top: 1.2rem;
+				height: 100vh;
+				width: 100vw;
+				background-color: #eee;
+			}
+
+			.content-form {
+				padding: 0 0.7rem;
+				background-color: #fff;
+			}
+
+			.form-item {
+				display: flex;
+				height: 1.2rem;
+				line-height: 1.2rem;
+				border-bottom: 1px solid #e9e9e9;
+			}
+
+			.form-item label {
+				display: block;
+				width: 2rem;
+				font-size: 0.38rem;
+			}
+
+			.form-item div {
+				width: 100%;
+			}
+
+			.form-item input {
+				border: none;
+				font-size: 0.38rem;
+				margin-bottom: 0;
+			}
+
+			.bottom-btn {
+				display: flex;
+				margin-top: 1rem;
+				padding: 0 0.7rem;
+			}
+
+			.btn-item {
+				width: 50%;
+			}
+
+			.button-danger {
+				text-align: center;
+				background: #f6383a;
+				color: #fff;
+				height: 1.2rem;
+				line-height: 1.2rem;
+				font-size: 0.5rem;
+				border-radius: 0.1rem;
+			}
+
+			.button-success {
+				text-align: center;
+				background: #4cd964;
+				color: #fff;
+				height: 1.2rem;
+				line-height: 1.2rem;
+				font-size: 0.5rem;
+				border-radius: 0.1rem;
+			}
+
+			.form-item-select {
+				display: flex;
+			}
+
+			/* 页面的免费咨询 */
+			.nav-index-foat {
+				position: fixed;
+				right: 0.3rem;
+				bottom: 2rem;
+				z-index: 9999999;
+			}
+
+			.nav-index-foat p {
+				width: 1.4rem;
+				height: 1.4rem;
+				background-color: rgba(57, 94, 169, 0.8);
+				border-radius: 100%;
+				text-align: center;
+				box-shadow: 0 0 10px 3px rgba(57, 94, 169, 0.45);
+			}
+
+			.nav-index-foat p a {
+				color: #fff;
+				font-size: 0.3rem;
+				margin-top: 0.15rem;
+				display: inline-block;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" id="back"></a>
+			<h1 class="mui-title">我的补贴银行卡</h1>
+		</header>
+		<div class="content">
+			<div class="content-form">
+				<div class="form-item">
+					<label for="">姓名</label>
+					<div>
+						<input type="text" id="name" placeholder="持卡人与入厂姓名一致">
+					</div>
+				</div>
+
+				<div class="form-item">
+					<label for="">身份证号</label>
+					<div>
+						<input type="text" id="idCard" placeholder="开户人身份证号">
+					</div>
+				</div>
+
+				<div class="form-item">
+					<label for="">卡号</label>
+					<div>
+						<input type="text" id="cardNumber" maxlength="23" placeholder="开户人银行卡号">
+					</div>
+				</div>
+
+				<div class="form-item">
+					<label for="">银行</label>
+					<div class="form-select">
+						<select id="bank">
+
+						</select>
+					</div>
+				</div>
+				<div class="form-item">
+					<label for="">开户地区</label>
+					<div class="form-item-select">
+						<div class="form-select">
+							<select id="province">
+							</select>
+						</div>
+						<div class="form-select">
+							<select id="city">
+
+							</select>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+			<div class="bottom-btn">
+				<div class="btn-item" style="padding-right: 0.35rem;">
+					<div class="button-danger" id="cancel">取消</div>
+				</div>
+				<div class="btn-item" style="padding-left: 0.35rem;">
+					<div class="button-success" id="submit">提交</div>
+				</div>
+			</div>
+		</div>
+		<div class="nav-index-foat">
+			<p class="nav-index-text" onclick="location.href='store.html'">
+				<a class="external">免费<br>咨询</a>
+			</p>
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/city.data.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.init();
+		var form = {};
+		mui.ready(function() {
+			var wxUser = getWxItem();
+			var provinces = cityData();
+			var banks = [
+				"请选择银行",
+				"中国建设银行",
+				"中国农业银行",
+				"中国工商银行",
+				"中国银行",
+				"中国招商银行",
+				"中国光大银行",
+				"中信银行",
+				"中国民生银行",
+				"浦发银行",
+				"广发银行",
+				"中国邮政储蓄银行"
+			]
+			var bankselect = document.getElementById("bank");
+			var strHtml = [];
+			banks.forEach((item, index) => {
+				var val = item;
+				if (item == '请选择银行')
+					val = "";
+				strHtml.push("<option value='" + val + "'>" + item + "</option>");
+			})
+			bankselect.innerHTML = strHtml.join('');
+
+			var provinceselect = document.getElementById("province");
+			strHtml = [];
+			provinces.forEach((item, index) => {
+				strHtml.push("<option value='" + item.value + "'>" + item.text + "</option>");
+			});
+			provinceselect.innerHTML = strHtml.join("");
+
+			document.getElementById("city").innerHTML = "<option value='0'>城市</option>"
+			mui.get(allUrl + "/api/bank/" + wxUser.unionid, function(res) {
+				if (res.code == 200) {
+					debugger
+					if (res.data) {
+						form = res.data;
+						document.getElementById("name").value = form.name;
+						document.getElementById("idCard").value = form.idCard;
+						document.getElementById("cardNumber").value = form.cardNumber;
+						bankselect.value = form.bank;
+
+						var flist = provinces.filter(x => x.text == form.province)[0];
+						document.getElementById("province").value = flist.value;
+						var citys = flist.children;
+						citys.unshift({
+							value: "0",
+							text: "城市"
+						});
+						var cityselect = document.getElementById("city");
+						cityselect.innerHTML = "";
+						var strHtml = [];
+						citys.forEach(item => {
+							strHtml.push("<option value='" + item.value + "'>" + item.text + "</option>");
+						})
+						cityselect.innerHTML = strHtml.join('');
+						var flistcity = citys.filter(x => x.text == form.city)[0];
+						document.getElementById("city").value = flistcity.value;
+					}
+
+				} else {
+					mui.toast(res.msg, {
+						duration: "long",
+						type: "div"
+					});
+				}
+			})
+			/**
+			 * 银行卡变更
+			 */
+			mui(".content").on("keyup", "#cardNumber", function() {
+				var cardNumber = document.getElementById("cardNumber").value
+				if (/^[\d]{0,19}$/.test(cardNumber.replace(/\s/g, ""))) {
+					//每四位数字加一个空格
+					var cardNumber1 = cardNumber.replace(/\D/g, "").replace(/(....)(?=.)/g, "$1 ");
+					document.getElementById("cardNumber").value = cardNumber1;
+				}
+			})
+			mui(".content").on("change", "#province", function(val) {
+				var flist = provinces.filter(x => x.value == document.getElementById("province").value)[0];
+				var citys = flist.children;
+				citys.unshift({
+					value: "0",
+					text: "城市"
+				});
+				var cityselect = document.getElementById("city");
+				cityselect.innerHTML = "";
+				var strHtml = [];
+				citys.forEach(item => {
+					strHtml.push("<option value='" + item.value + "'>" + item.text + "</option>");
+				})
+				cityselect.innerHTML = strHtml.join('');
+			})
+			/**
+			 * 取消
+			 */
+			mui(".bottom-btn").on("tap", "#cancel", function() {
+				location.href = "user.html";
+			})
+			//确定
+			mui(".bottom-btn").on("tap", "#submit", function() {
+				debugger
+				const wxUser = getWxItem();
+				form.name = document.getElementById("name").value;
+				form.idCard = document.getElementById("idCard").value;
+				form.cardNumber = document.getElementById("cardNumber").value;
+				form.bank = document.getElementById("bank").options[document.getElementById("bank").selectedIndex].text;
+				form.province = document.getElementById("province").options[document.getElementById("province").selectedIndex].text;
+				form.city = document.getElementById("city").options[document.getElementById("city").selectedIndex].text
+				if (!form.name) {
+					mui.toast("请输入姓名!", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (wxUser.username != form.name) {
+					mui.toast("持卡人与入厂姓名一致!", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				var regIdNo = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+				if (!regIdNo.test(form.idCard)) {
+					mui.toast("身份证号填写有误!", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				let cardNumber = form.cardNumber.replace(/\s+/g, "");
+				if (!/^\d{16}|\d{19}$/.test(cardNumber)) {
+					mui.toast("银行卡号填写有误!", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+
+				if (form.bank == "请选择银行") {
+					mui.toast("请选择银行!", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (form.province == "省份") {
+					mui.toast("请选择省份!", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (form.city == "城市") {
+					mui.toast("请选择城市!", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				form.unionid = wxUser.unionid;
+				if (!form.id ) {
+					mui.post(allUrl + "/api/bank", form, function(res) {
+						if (res.code == 200) {
+							mui.toast("提交成功!", {
+								duration: "long",
+								type: "div"
+							});
+							form.id = res.id;
+						} else mui.toast(res.msg, {
+							duration: "long",
+							type: "div"
+						});
+					});
+				} else {
+					mui.ajax(allUrl + "/api/bank", {
+						data: form,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'put', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(res) {
+							if (res.code == 200) {
+								mui.toast("提交成功!", {
+									duration: "long",
+									type: "div"
+								});
+							} else mui.toast(res.msg, {
+								duration: "long",
+								type: "div"
+							});
+						}
+					})
+
+				}
+			})
+		})
+	</script>
+</html>

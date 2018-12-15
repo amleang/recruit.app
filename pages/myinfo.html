@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>我的信息</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			* {
+				touch-action: pan-y;
+			}
+
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			.mui-bar-nav {
+				background: #39a9f0;
+			}
+
+			.mui-title {
+				color: #fff;
+			}
+
+			.content-block {
+				padding-top: 1.2rem;
+				height: 100vh;
+				width: 100vw;
+				background-color: #eee;
+			}
+
+			.form {
+				padding: 0 0.7rem;
+				background-color: #fff;
+			}
+
+			.form-item {
+				display: flex;
+				height: 1.5rem;
+				line-height: 1.5rem;
+				border-bottom: 1px solid #e9e9e9;
+			}
+
+			.form-item label {
+				display: block;
+				width: 2rem;
+				font-size: 0.4rem;
+			}
+
+			.form-item span {
+				border: none;
+				font-size: 0.4rem;
+				padding: 0.5rem 0.4rem;
+			}
+
+			.form-item input {
+				border: none;
+				font-size: 0.4rem;
+			}
+
+			.bottom-btn {
+				display: flex;
+				align-items: center;
+				margin-top: 0.8rem;
+			}
+
+			.bottom-btn .cancel {
+				width: 42%;
+				margin-left: 4%;
+				height: 1.2rem;
+				text-align: center;
+				line-height: 1.2rem;
+				border-radius: 0.2rem;
+				background: #f6383a;
+				color: #fff;
+				font-size: 0.4rem;
+			}
+
+			.bottom-btn .submit {
+				width: 46%;
+				margin-left: 4%;
+				height: 1.2rem;
+				text-align: center;
+				line-height: 1.2rem;
+				border-radius: 0.2rem;
+				background: #4cd964;
+				color: #fff;
+				font-size: 0.4rem;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" id="back"></a>
+			<h1 class="mui-title">我的信息</h1>
+		</header>
+		<div class="content-block">
+			<div class="form">
+				<div class="form-item">
+					<label for="">姓名</label>
+					<div>
+						<input type="text" id="username" maxlength="6" placeholder="请输入姓名">
+					</div>
+				</div>
+				<div class="form-item">
+					<label for="">手机号</label>
+					<div>
+						<span id="phone"></span>
+					</div>
+				</div>
+				<div class="form-item">
+					<label for="">身份证号码</label>
+					<div>
+						<input type="text" id="idCode" maxlength="18" placeholder="请输入身份证号码">
+					</div>
+				</div>
+			</div>
+			<div class="bottom-btn">
+				<div class="cancel" id="cancel">取消</div>
+				<div class="submit" id="submit">提交</div>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.init();
+		var form = {};
+		mui.ready(function() {
+			var wxUser = getWxItem();
+			mui.get(allUrl + "/api/app/myinfo?unionid=" + wxUser.unionid, function(res) {
+				if (res.code == 200) {
+					console.log("myinfo=>", res);
+					form = res.data;
+					document.getElementById("username").value = form.username;
+					document.getElementById("phone").innerHTML = form.phone;
+					document.getElementById("idCode").value = form.idCode;
+				} else {
+					mui.toast(res.msg, {
+						duration: "long",
+						type: "div"
+					});
+				}
+			})
+			/**
+			 * 取消
+			 */
+			document.getElementById("cancel").addEventListener("tap", function() {
+				location.href = "user.html"
+			})
+			/**
+			 * 提交
+			 */
+			document.getElementById("submit").addEventListener("tap", function() {
+				form.username = document.getElementById("username").value;
+				form.idCode = document.getElementById("idCode").value;
+				if (!form.username) {
+					mui.toast("请输入姓名", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (!form.idCode) {
+					mui.toast("请输入身份证号码", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(form.idCode)) {
+					mui.toast("身份证输入不合法", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+
+				mui.post(allUrl + "/api/app/setuserinfo", form, function(res) {
+					if (res.code == 200) {
+						setWxItem(this.form);
+						mui.toast("修改成功", {
+							duration: "long",
+							type: "div"
+						});
+					} else {
+						mui.toast(res.msg, {
+							duration: "long",
+							type: "div"
+						});
+					}
+				})
+			})
+		})
+	</script>
+</html>

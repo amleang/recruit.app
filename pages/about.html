@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>关于我们</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			* {
+				touch-action: pan-y;
+			}
+
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			.mui-bar-nav {
+				background: #39a9f0;
+			}
+
+			.mui-title {
+				color: #fff;
+			}
+
+			.content {
+				padding: 0 0.3rem;
+				padding-top: 1.5rem;
+				height: 100vh;
+				width: 100vw;
+				background-color: #eee;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" id="back"></a>
+			<h1 class="mui-title">关于我们</h1>
+		</header>
+		<div class="content" id="content">
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.init();
+		mui.ready(function() {
+			mui.get(allUrl + "/api/app/co", function(res) {
+				if (res.code == 200) {
+					document.getElementById("content").innerHTML = res.data[0].abstract;
+				} else {
+					mui.toast(res.msg, {
+						duration: "long",
+						type: "div"
+					});
+				}
+			})
+		})
+	</script>
+</html>

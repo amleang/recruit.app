@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>我的关注</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			.display {
+				display: none;
+			}
+
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			* {
+				touch-action: pan-y;
+			}
+
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			.mui-bar-nav {
+				background: #39a9f0;
+			}
+
+			.mui-title {
+				color: #fff;
+			}
+
+			.content {
+				padding-top: 1.2rem;
+				height: 100vh;
+				width: 100vw;
+				background-color: #eee;
+			}
+
+			.content-ul {
+				padding: 0 0.3rem;
+				background-color: #fff;
+				overflow: auto;
+			}
+
+			.ul-empt {
+				text-align: center;
+				font-size: 0.5rem;
+				color: #0894ec;
+				height: 1.2rem;
+				line-height: 1.2rem;
+				margin-bottom: 1.2rem;
+				border-bottom: 1px #f1f1f1 solid;
+			}
+
+			.recruit-list {
+				padding-bottom: 50px;
+			}
+
+			.recruit-item {
+				display: flex;
+				padding: 0 10px;
+				border: 1px #f1f1f1 solid;
+			}
+
+			.recruit-item .nothing {
+				font-size: 0.4rem;
+				text-align: center;
+				width: 100%;
+				height: 5rem;
+				line-height: 5rem;
+			}
+
+			.recruit-item .item-left {
+				width: 29%;
+				height: 2rem;
+				padding: 0.2rem 0.2rem 0.2rem 0.1rem;
+			}
+
+			.recruit-item .item-con {
+				flex: 1;
+				width: 100%;
+			}
+
+			.recruit-item .item-con .title {
+				font-size: 0.4rem;
+				line-height: 0.7rem;
+				height: 0.7rem;
+				overflow: hidden;
+			}
+
+			.recruit-item .item-con .subtitle {
+				font-size: 0.35rem;
+			}
+
+			.recruit-item .item-con .price {
+				font-size: 0.35rem;
+			}
+
+			.recruit-item .item-con .price span {
+				color: rgb(255, 106, 15);
+				font-family: "ArialMT";
+			}
+
+			.recruit-item .item-right {
+				margin-left: 10px;
+				width: 2rem;
+				display: flex;
+				flex-flow: column;
+				justify-content: center;
+			}
+
+			.recruit-item .item-right .btn-one {
+				height: 0.65rem;
+				overflow: hidden;
+				background-color: #0894ec !important;
+				line-height: 0.65rem;
+				text-align: center;
+				font-size: 12px;
+				color: #fff;
+			}
+
+			.recruit-item .item-right .btn-span {
+				font-size: 12px;
+				color: rgb(255, 106, 15);
+				height: 0.65rem;
+				line-height: 0.65rem;
+				overflow: hidden;
+				text-align: center;
+				border: 1px solid #e6e6e6;
+			}
+
+			.mui-table-view-cell a {
+				display: flex;
+			}
+
+			.mui-table-view {
+				margin-bottom: 1.2rem;
+			}
+
+			.mui-table-view .mui-media-object {
+				line-height: 50px;
+				max-width: 100%;
+				height: 50px;
+			}
+
+			/* 页面的免费咨询 */
+			.nav-index-foat {
+				position: fixed;
+				right: 0.3rem;
+				bottom: 2rem;
+				z-index: 9999999;
+			}
+
+			.nav-index-foat p {
+				width: 1.4rem;
+				height: 1.4rem;
+				background-color: rgba(57, 94, 169, 0.8);
+				border-radius: 100%;
+				text-align: center;
+				box-shadow: 0 0 10px 3px rgba(57, 94, 169, 0.45);
+			}
+
+			.nav-index-foat p a {
+				color: #fff;
+				font-size: 0.3rem;
+				margin-top: 0.15rem;
+				display: inline-block;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" id="back"></a>
+			<h1 class="mui-title">我的关注</h1>
+		</header>
+		<div class="content">
+			<div class="content-ul display" id="empit">
+				<div class="ul-empt">您还没有关注过任何岗位哦！</div>
+			</div>
+			<div class="recruit-list" id="listmain">
+				<div class="mui-table-view" id="list">
+
+				</div>
+
+			</div>
+		</div>
+		<div class="nav-index-foat">
+			<p class="nav-index-text" onclick="location.href='store.html'">
+				<a class="external">免费<br>咨询</a>
+			</p>
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.init();
+		mui.ready(function() {
+			var wxUser = getWxItem();
+			mui.get(allUrl + "/api/app/attentionlist?unionid=" + wxUser.unionid, function(res) {
+				if (res.code == 200) {
+					var list = res.data;
+					if (list.length > 0) {
+						document.getElementById("empit").classList.add("display");
+						var strHtml = [];
+						var listdiv = document.getElementById("list");
+						list.forEach(item => {
+							strHtml.push("<div class='recruit-item' attr-id='" + item.recruitid + "'>");
+							strHtml.push("	<img class='item-left' src='" + allUrl + item.cover + "'/>");
+							strHtml.push("	<div class='item-con'>");
+							strHtml.push("		<div class='title'>" + item.name + "</div>");
+							strHtml.push("		<div class='subtitle'>" + item.subname + "</div>");
+							strHtml.push("		<div class='price'><span>" + item.salaryStart + "-" + item.salaryEnd + "</span> 元/月</div>");
+							strHtml.push("	</div>");
+							if (item.type == 1) {
+								strHtml.push("<div class='item-right'>");
+								strHtml.push("	<div class='btn-one'>工价</div>");
+								strHtml.push("	<div class='btn-span'>" + item.laborPrice + "元/小时</div>");
+								strHtml.push("</div>");
+							}
+							if (item.type == 2) {
+								strHtml.push("<div class='item-right'>");
+								strHtml.push("	<div class='btn-one'>补贴</div>");
+								strHtml.push("	<div class='btn-span'>" + item.subsidyExplain + "</div>");
+								strHtml.push("</div>");
+							}
+							strHtml.push("</div>");
+						})
+						listdiv.innerHTML = strHtml.join("");
+					} else {
+						document.getElementById("listmain").classList.add("display");
+						document.getElementById("empit").classList.remove("display");
+					}
+				} else {
+					mui.toast(res.msg, {
+						duration: "long",
+						type: "div"
+					});
+				}
+			})
+			//页面跳转
+			mui("#list").on("tap", ".recruit-item", function() {
+				var id = this.getAttribute("attr-id");
+				console.log("id=>", id)
+				location.href = "jobdetail.html?id=" + id;
+			})
+		})
+	</script>
+</html>

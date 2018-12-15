@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>余额明细</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			.mui-bar-nav {
+				background: #39a9f0;
+			}
+
+			.mui-title {
+				color: #fff;
+			}
+
+			.content {
+				padding-top: 1.2rem;
+				height: 100vh;
+				width: 100vw;
+				background-color: #fff;
+			}
+
+			.logo {
+				width: 45%;
+				display: block;
+				margin: 1rem auto;
+			}
+
+			.logo img {
+				max-width: 100%;
+			}
+
+			.user-wrap {
+				transform: translateX(-50%);
+				top: 40%;
+				position: absolute;
+				left: 50%;
+			}
+
+			.user-wrap .name {
+				font-weight: bold;
+				font-size: 0.5rem;
+			}
+
+			.money-wrap {
+				transform: translate(-50%, -50%);
+				top: 65%;
+				position: absolute;
+				left: 50%;
+			}
+
+			.money-wrap .balance {
+				margin-bottom: 0.8rem;
+				font-size: 0.6rem;
+				color: #3d4145;
+				font-weight: lighter;
+			}
+
+			.money-wrap .money {
+				text-align: center;
+			}
+
+			.money-wrap .money .money-type {
+				font-size: 0.8rem;
+				font-weight: bold;
+				text-align: center;
+			}
+
+			.money-wrap .money .money-amount {
+				font-size: 1.6rem;
+				color: rgb(0, 130, 255);
+			}
+
+			.money-wrap .look-detail {
+				margin-top: 1rem;
+				font-size: 0.5rem;
+				text-align: center;
+			}
+
+			* {
+				touch-action: pan-y;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<header id="header" class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" id="back"></a>
+				<h1 class="mui-title">余额明细</h1>
+			</header>
+			<div class="content">
+				<div class="logo">
+					<img src="../images/logo.png" alt="">
+				</div>
+				<div class="user-wrap">
+					<div class="name" id="username"></div>
+				</div>
+				<div class="money-wrap">
+					<div class="balance">您的余额为:</div>
+					<div class="money"><span class="money-type">￥</span><span class="money-amount" id="totalprice"></span></div>
+					<div class="look-detail"><a id="view_detail">查看明细</a></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		mui.init();
+		mui.ready(function() {
+			if (checkLogin()) {
+				var wxUser = getWxItem();
+				document.getElementById("username").innerHTML = wxUser.username;
+				mui.get(allUrl + "/api/app/balance?unionid=" + wxUser.unionid, function(res) {
+					if (res.code == 200) {
+						document.getElementById("totalprice").innerText = res.data.totalprice?res.data.totalprice:0;
+					}
+				})
+				mui(".money-wrap").on("tap", "#view_detail", function() {
+					location.href = "balancelist.html";
+				})
+			} else {
+				mui.toast(res.msg, {
+					duration: "long",
+					type: "div"
+				});
+			}
+			document.getElementById("back").addEventListener("tap", function() {
+				location.href = "user.html";
+			})
+
+		})
+	</script>
+</html>

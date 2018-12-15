@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<style type="text/css">
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			.page {
+				background-color: #fff;
+			}
+
+			.banner {
+				width: 85%;
+				margin: auto;
+				text-align: center;
+				padding: 0.7rem 0;
+			}
+
+			.banner img {
+				width: 100%;
+				height: 100%;
+			}
+
+			.content-block {
+				padding: 0 0.7rem;
+				margin-top: 0.7rem;
+			}
+
+			.content-block .recommend-way {
+				text-align: center;
+				font-size: 0.45rem;
+				color: #6d6d72;
+			}
+
+			.reg {
+				padding: 0.7rem 0;
+			}
+
+			.login-btn {
+				height: 1.25rem;
+				line-height: 1.25rem;
+				text-align: center;
+				background: #0894ec;
+				color: #fff;
+				font-size: 0.45rem;
+				border-radius: 5px;
+			}
+
+			.login-btn {
+				height: 1.25rem;
+				line-height: 1.25rem;
+				text-align: center;
+				background: #0894ec;
+				color: #fff;
+				font-size: 0.45rem;
+				border-radius: 5px;
+			}
+
+			.footer-login-btn {
+				text-align: center;
+				color: #0894ec;
+				font-size: 0.4rem;
+			}
+
+			.form-item {
+				display: flex;
+				height: 1.5rem;
+				line-height: 1.5rem;
+				border-bottom: 1px solid #e9e9e9;
+			}
+
+			.form-item label {
+				display: block;
+				width: 2rem;
+				font-size: 0.4rem;
+			}
+
+			.form-item input {
+				border: none;
+				font-size: 0.4rem;
+			}
+
+			.form-yzm {
+				position: absolute;
+				right: 0.7rem;
+				border-left: 1px solid #e9e9e9;
+				width: 3rem;
+				text-align: center;
+				font-size: 0.4rem;
+				color: #0794ec;
+			}
+
+			.display {
+				display: none;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="page">
+			<div class="banner">
+				<img src="images/logo.png">
+			</div>
+		</div>
+		<div class="content-block" id="getwxinfo">
+			<div class="recommend-way">
+				推荐登陆方式
+			</div>
+			<div class="reg">
+				<div class="button button-fill login-btn" id="wx_login">
+					<i class="mui-icon mui-icon-weixin"></i>微信快捷登录
+				</div>
+			</div>
+		</div>
+
+		<div id="setuserinfo" class="content-block display" style="background-color: #fff;">
+			<div class="form">
+				<div class="form-item">
+					<label for="">姓名</label>
+					<div>
+						<input type="text" id="username" placeholder="请输入姓名">
+					</div>
+				</div>
+				<div class="form-item">
+					<label for="">手机号码</label>
+					<div>
+						<input type="text" maxlength="11" id="phone" pattern="[0-9]*" placeholder="请输入手机号码">
+					</div>
+				</div>
+				<div class="form-item">
+					<label for="verificationCode">验证码</label>
+					<div>
+						<input id="code" type="text" maxlength="4" pattern="[0-9]*" placeholder="请输入验证码">
+					</div>
+					<div class="form-yzm" id="sendSMS_handle">
+						获取验证码
+					</div>
+				</div>
+				<div class="form-item">
+					<label for="">身份证</label>
+					<div>
+						<input type="text" id="idCode" placeholder="请输入身份证号码">
+					</div>
+				</div>
+			</div>
+			<div class="reg">
+				<div class="button button-fill login-btn" id="reg_handle">
+					注册
+				</div>
+			</div>
+
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/flexible.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			var isSend = false,
+				time = 60,
+				interTime = null,
+				rescode = "";
+			mui.plusReady(function() {
+				plus.oauth.getServices(function(services) {
+					auths = services
+				})
+			})
+			document.getElementById("wx_login").addEventListener("tap", function() {
+				authLogin('weixin');
+			})
+			var userForm = null;
+			/**
+			 * 登录操作
+			 */
+			function authLogin(type) {
+				var s;
+				for (var i = 0; i < auths.length; i++) {
+					if (auths[i].id == type) {
+						s = auths[i];
+						break;
+					}
+				}
+				if (!s.authResult) {
+					s.login(function(e) {
+						authUserInfo(type);
+					}, function(e) {
+						mui.toast("登录认证失败！" + e.message, {
+							duration: "long",
+							type: "div"
+						});
+					});
+				} else {
+					authUserInfo(type);
+				}
+			}
+			// 微信登录认证信息
+			function authUserInfo(type) {
+				var s;
+				for (var i = 0; i < auths.length; i++) {
+					if (auths[i].id == type) {
+						s = auths[i];
+						break;
+					}
+				}
+				if (!s.authResult) {
+					mui.toast("未授权登录!", {
+						duration: "long",
+						type: "div"
+					});
+				} else {
+					s.getUserInfo(function(e) {
+						var josnStr = JSON.stringify(s.userInfo);
+						var jsonObj = s.userInfo;
+						console.log("获取用户信息成功：" + josnStr);
+						mui.post(allUrl + "/api/app/savewxuser", jsonObj, function(res) {
+							userForm = res.data;
+							if (userForm.status == 0) {
+								//继续完善信息
+								document.getElementById("setuserinfo").classList.remove("display");
+								document.getElementById("getwxinfo").classList.add("display");
+
+							} else {
+								//跳转
+								setWxItem(userForm);
+								var params = getQueryString("ref");
+								console.log("ref=>", params);
+								if (params) {
+									console.log("a");
+									params = params.replace('|', '?');
+									location.href = "pages/" + params;
+								} else {
+									console.log("b");
+									location.href = "index.html";
+								}
+							}
+
+						})
+
+					}, function(e) {
+						alert("获取用户信息失败：" + e.message + " - " + e.code);
+					});
+				}
+			}
+
+			/**
+			 * 获取短信验证码
+			 */
+			document.getElementById("sendSMS_handle").addEventListener("tap", function() {
+				if (!isSend) {
+					var form = {
+						phone: document.getElementById("phone").value,
+						code: document.getElementById("code").value
+					}
+					if (!form.phone) {
+						mui.toast("请输入手机号码！", {
+							duration: "long",
+							type: "div"
+						});
+						return;
+					}
+					if (!/^1[34578]\d{9}$/.test(form.phone)) {
+						mui.toast("手机号码有误", {
+							duration: "long",
+							type: "div"
+						});
+						return;
+					}
+					isSend = true;
+					time = 60;
+
+					mui.post(allUrl + "/api/app/sendsms", {
+						unionid: userForm.unionid,
+						phone: form.phone
+					}, function(res) {
+						if (res.code == 200) {
+							rescode = res.data;
+							mui.toast("验证码已成功发送到您的手机上！", {
+								duration: "long",
+								type: "div"
+							});
+						} else {
+							mui.toast(res.msg, {
+								duration: "long",
+								type: "div"
+							});
+						}
+					})
+					time_chuange();
+				}
+			})
+
+			function time_chuange() {
+				interTime = setInterval(() => {
+					if (time != 0) {
+						time--;
+						document.getElementById("sendSMS_handle").innerHTML = time;
+					} else {
+						isSend = false;
+						document.getElementById("sendSMS_handle").innerHTML = "获取验证码";
+						clearInterval(interTime);
+					}
+				}, 1000);
+			}
+
+			/**
+			 * 注册
+			 */
+			document.getElementById("reg_handle").addEventListener("tap", function() {
+				debugger
+				var form = {
+					username: document.getElementById("username").value,
+					phone: document.getElementById("phone").value,
+					code: document.getElementById("code").value,
+					idCode: document.getElementById("idCode").value
+				}
+				if (!form.username) {
+					mui.toast("请输入姓名！", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (!form.phone) {
+					mui.toast("请输入手机号码！", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (!/^1[34578]\d{9}$/.test(form.phone)) {
+					mui.toast("手机号码有误", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (form.code) {
+					if (rescode) {
+						if (form.code != rescode) {
+							mui.toast("验证码收入有误，请重新输入！", {
+								duration: "long",
+								type: "div"
+							});
+							return;
+						}
+					}
+				} else {
+					mui.toast("请输入验证码！", {
+						duration: "long",
+						type: "div"
+					});
+				}
+				if (!form.idCode) {
+					mui.toast("请输入身份证号码", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(form.idCode)) {
+					mui.toast("身份证输入不合法", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				form.unionid = userForm.unionid;
+				form.status = 1;
+				mui.post(allUrl + "/api/app/savereguser", form, function(res) {
+					debugger
+					if (res.code == 200) {
+						//注册成功
+						userForm.username = form.username;
+						userForm.status = 1;
+						userForm.phone = form.phone;
+						userForm.idCode = form.idCode;
+						setWxItem(userForm);
+						var params = getQueryString("ref");
+						console.log("ref=>", params);
+						if (params) {
+							console.log("a");
+							params = params.replace('|', '?');
+							location.href = "pages/" + params;
+						} else {
+							console.log("b");
+							location.href = "index.html";
+						}
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

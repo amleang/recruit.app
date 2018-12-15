@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>更换手机号码</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			* {
+				touch-action: pan-y;
+			}
+
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			.mui-bar-nav {
+				background: #39a9f0;
+			}
+
+			.mui-title {
+				color: #fff;
+			}
+
+			.content {
+				padding-top: 1.2rem;
+				height: 100vh;
+				width: 100vw;
+				background-color: #eee;
+			}
+
+			.logo {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.logo img {
+				width: 60%;
+			}
+
+			.reg {
+				padding: 0.7rem 0;
+			}
+
+			.login-btn {
+				height: 1.25rem;
+				line-height: 1.25rem;
+				text-align: center;
+				background: #0894ec;
+				color: #fff;
+				font-size: 0.45rem;
+				border-radius: 5px;
+			}
+
+			.footer-login-btn {
+				text-align: center;
+				color: #0894ec;
+				font-size: 0.4rem;
+			}
+
+			.form-item {
+				display: flex;
+				height: 1.5rem;
+				line-height: 1.5rem;
+				border-bottom: 1px solid #e9e9e9;
+			}
+
+			.form-item label {
+				display: block;
+				width: 2rem;
+				font-size: 0.4rem;
+			}
+
+			.form-item input {
+				border: none;
+				font-size: 0.4rem;
+			}
+
+			.content-block {
+				background: #fff;
+				padding: 0.3rem 0.5rem;
+			}
+
+			.form-yzm {
+				position: absolute;
+				right: 0.7rem;
+				border-left: 1px solid #e9e9e9;
+				width: 3rem;
+				text-align: center;
+				font-size: 0.4rem;
+				color: #0794ec;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" id="back"></a>
+			<h1 class="mui-title">更换手机号码</h1>
+		</header>
+		<div class="content">
+			<div class="logo">
+				<img src="../images/logo.png" alt="">
+			</div>
+			<div class="content-block">
+				<div class="form">
+					<div class="form-item">
+						<label for="">手机号码</label>
+						<div>
+							<input type="number" maxlength="11" id="phone" placeholder="请输入手机号码">
+						</div>
+					</div>
+					<div class="form-item">
+						<label for="verificationCode">验证码</label>
+						<div>
+							<input id="code" type="number" maxlength="4" placeholder="请输入验证码">
+						</div>
+						<div class="form-yzm" id="sendSMS_handle">
+							获取验证码
+						</div>
+					</div>
+				</div>
+				<div class="reg">
+					<div class="button button-fill login-btn" id="ok_handle">
+						确认更换
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.init();
+		var isSend = false,
+			time = 60,
+			interTime = null,
+			rescode = "";
+		mui.ready(function() {
+			document.getElementById("sendSMS_handle").addEventListener("tap", function() {
+				if (!isSend) {
+					var form = {
+						phone: document.getElementById("phone").value,
+						code: document.getElementById("code").value
+					}
+					if (!form.phone) {
+						mui.toast("请输入手机号码！", {
+							duration: "long",
+							type: "div"
+						});
+						return;
+					}
+					if (!/^1[34578]\d{9}$/.test(form.phone)) {
+						mui.toast("手机号码有误", {
+							duration: "long",
+							type: "div"
+						});
+						return;
+					}
+					isSend = true;
+					time = 60;
+					const wxUser = getWxItem();
+					mui.post(allUrl + "/api/app/sendsms", {
+						unionid: wxUser.unionid,
+						phone: form.phone
+					}, function(res) {
+						if (res.code == 200) {
+							rescode = res.data;
+							mui.toast("验证码已成功发送到您的手机上！", {
+								duration: "long",
+								type: "div"
+							});
+						} else {
+							mui.toast(res.msg, {
+								duration: "long",
+								type: "div"
+							});
+						}
+					})
+					time_chuange();
+				}
+			})
+
+			function time_chuange() {
+				interTime = setInterval(() => {
+					if (time != 0) {
+						time--;
+						document.getElementById("sendSMS_handle").innerHTML = time;
+					} else {
+						isSend = false;
+						document.getElementById("sendSMS_handle").innerHTML = "获取验证码";
+						clearInterval(interTime);
+					}
+				}, 1000);
+			}
+
+			document.getElementById("ok_handle").addEventListener("tap", function() {
+				var form = {
+					phone: document.getElementById("phone").value,
+					code: document.getElementById("code").value
+				}
+				if (!form.phone) {
+					mui.toast("请输入手机号码！", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (!/^1[34578]\d{9}$/.test(form.phone)) {
+					mui.toast("手机号码有误", {
+						duration: "long",
+						type: "div"
+					});
+					return;
+				}
+				if (form.code) {
+					if (rescode) {
+						if (form.code != rescode) {
+							mui.toast("验证码收入有误，请重新输入！", {
+								duration: "long",
+								type: "div"
+							});
+							return;
+						}
+					}
+				} else {
+					mui.toast("请输入验证码！", {
+						duration: "long",
+						type: "div"
+					});
+				}
+				var wxUser = getWxItem();
+				mui.post(allUrl + "/api/app/updatephone", {
+					unionid: wxUser.unionid,
+					phone: form.phone,
+					code: form.code
+				}, function(res) {
+					if (res.code == 200) {
+						mui.toast("手机号码修改成功！", {
+							duration: "long",
+							type: "div"
+						});
+					} else {
+						mui.toast(res.msg, {
+							duration: "long",
+							type: "div"
+						});
+					}
+				})
+			})
+		})
+	</script>
+</html>

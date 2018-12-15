@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>余额详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			.mui-bar-nav {
+				background: #39a9f0;
+			}
+
+			.mui-title {
+				color: #fff;
+			}
+
+			.display {
+				display: none;
+			}
+
+			.mui-toast-container {
+				bottom: 50% !important;
+				z-index: 10000000000;
+			}
+
+			.content {
+				padding-top: 1.2rem;
+				height: 100vh;
+				width: 100vw;
+				background-color: #fff;
+			}
+
+			.content-ul {
+				padding: 0 0.3rem;
+				background-color: #fff;
+				overflow: auto;
+			}
+
+			.ul-empt {
+				text-align: center;
+				font-size: 0.5rem;
+				color: #0894ec;
+				height: 1.2rem;
+				line-height: 1.2rem;
+				margin-bottom: 1.2rem;
+				border-bottom: 1px #f1f1f1 solid;
+			}
+
+			.form-item {
+				border-bottom: 1px #f1f1f1 solid;
+				padding: 0 0.5rem;
+				color: #3d4145;
+			}
+
+			.form-item .money {
+				display: flex;
+				height: 1.5rem;
+				align-items: center;
+			}
+
+			.form-item .money .time {
+				width: 50%;
+				font-size: 0.45rem;
+			}
+
+			.form-item .money .price {
+				font-size: 1rem;
+				color: #f00;
+				width: 50%;
+				text-align: right;
+			}
+
+			.form-item .remarks {
+				font-size: 0.4rem;
+				height: 0.8rem;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			* {
+				touch-action: pan-y;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<header id="header" class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" id="back"></a>
+				<h1 class="mui-title">余额详情</h1>
+			</header>
+			<div class="content">
+				<div class="content-ul" id="empit">
+					<div class="ul-empt">暂无任何余额记录！</div>
+				</div>
+				<div id="list">
+
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		mui.init();
+		mui.ready(function() {
+			if (checkLogin()) {
+				var wxUser = getWxItem();
+				mui.get(allUrl + "/api/app/balancelist?unionid=" + wxUser.unionid, function(res) {
+					if (res.code == 200) {
+						console.log("res=>", res);
+						var list = res.data;
+						if (list.length > 0) {
+							document.getElementById("empit").classList.add("display");
+							var listmain = document.getElementById("list");
+							list.forEach(item => {
+								var itemdiv = document.createElement("div");
+								itemdiv.setAttribute("class", "form-item");
+								var itemmoneydiv = document.createElement("div");
+								itemmoneydiv.setAttribute("class", "money");
+								itemmoneydiv.innerHTML = "<div class='time'>" + formatDate(item.updateAt) + "</div>" +
+									"<div class='price'>+" + item.price + "</div>";
+								itemdiv.appendChild(itemmoneydiv);
+								var itemremarksdiv = document.createElement("div");
+								itemremarksdiv.setAttribute("class", "remarks");
+								itemremarksdiv.innerHTML = item.name == "" ? "推荐记录" : item.name;
+								itemdiv.appendChild(itemremarksdiv);
+								listmain.appendChild(itemdiv);
+							})
+
+						} else {
+							document.getElementById("empit").classList.remove("display");
+						}
+					} else {
+						mui.toast(res.msg, {
+							duration: "long",
+							type: "div"
+						});
+					}
+				});
+			} else
+				gotoLogin()
+
+			document.getElementById("back").addEventListener("tap", function() {
+				location.href = "balance.html";
+			})
+		})
+	</script>
+</html>

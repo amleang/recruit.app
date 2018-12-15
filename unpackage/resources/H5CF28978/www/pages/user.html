@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>个人中心</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			.mui-bar {
+				box-shadow: none;
+			}
+
+			.content {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				overflow: auto;
+				-webkit-overflow-scrolling: touch;
+				background-color: #efeff4;
+			}
+
+			.header-img {
+				background-image: url(../images/user02.png);
+				background-size: 100% 100%;
+				overflow: hidden;
+			}
+
+			.header-img .top {
+				height: 0.5rem;
+				line-height: 0.5rem;
+			}
+
+			.header-img .avatar {
+				margin: 0.5rem 0 0.5rem 0.5rem;
+				display: flex;
+			}
+
+			.avatar .user-img {
+				width: 1.6rem;
+				height: 1.6rem;
+				border-radius: 5px;
+				overflow: hidden;
+			}
+
+			.avatar .user-img img {
+				display: block;
+				width: 100%;
+			}
+
+			.avatar .man-box {
+				padding-left: 0.25rem;
+				font-size: 0.4rem;
+				width: 100%;
+				flex: 1;
+			}
+
+			.avatar .man-box div {
+				height: 0.8rem;
+				line-height: 0.8rem;
+			}
+
+			.avatar .my_qrCode {
+				margin: 0 0.8rem 0 auto;
+				align-self: center;
+				color: #000;
+			}
+
+			.list-user {
+				margin-bottom: 0.15rem;
+				background: #fff;
+				padding: 0 0.3rem;
+			}
+
+			.item-content {
+				display: flex;
+				align-items: center;
+				height: 1.2rem;
+				border-bottom: 1px solid #f0f0f0;
+			}
+
+			.user-icon {
+				font-size: 0.4rem;
+				color: #0894ec;
+				font-weight: bold;
+				width: 0.6rem;
+			}
+
+			.item-title {
+				color: #333333;
+				font-size: 0.35rem;
+				width: 100%;
+				flex: 1;
+			}
+
+			.user-icon-right i {
+				font-size: 0.58rem;
+				color: #ccc;
+			}
+
+			.login-bottom {
+				margin-bottom: 1.5rem;
+				padding: 0 0.3rem;
+				height: 1.2rem;
+				line-height: 1.2rem;
+				text-align: center;
+				background-color: #fff;
+				color: #0894ec;
+				font-size: 0.5rem;
+			}
+
+			* {
+				touch-action: pan-y;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<nav class="mui-bar mui-bar-tab">
+				<a class="mui-tab-item" id="my_job">
+					<span class="mui-icon icon iconfont icon-gongzuo"></span>
+					<span class="mui-tab-label">找工作</span>
+				</a>
+				<a class="mui-tab-item" onclick="location.href='recommend.html'">
+					<span class="mui-icon icon iconfont icon-tuijianyoujiang"></span>
+					<span class="mui-tab-label">推荐有奖</span>
+				</a>
+				<a class="mui-tab-item mui-active">
+					<span class="mui-icon icon iconfont icon-yonghu"></span>
+					<span class="mui-tab-label">个人中心</span>
+				</a>
+			</nav>
+			<div class="content">
+				<div class="header-img" id="myinfo_handle">
+					<div class="top"></div>
+					<div class="avatar">
+						<div class="user-img">
+							<img id="userimg" alt="">
+						</div>
+						<div class="man-box">
+							<div id="username"></div>
+							<div id="userphone"></div>
+						</div>
+
+					</div>
+				</div>
+				<div class="list-user">
+					<div class="item-content" id="mybalance">
+						<div class="user-icon">
+							<i class="iconfont icon-wallet_icon"></i>
+						</div>
+						<div class="item-title">我的余额</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div>
+					<div class="item-content" id="mybankcard">
+						<div class="user-icon">
+							<i class="iconfont icon-yinxingqia-copy"></i>
+						</div>
+						<div class="item-title">绑定补贴卡</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div>
+				</div>
+
+				<div class="list-user">
+					<div class="item-content" id="mywork">
+						<div class="user-icon">
+							<i class="iconfont icon-job"></i>
+						</div>
+						<div class="item-title">我的工作</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div>
+					<div class="item-content" id="myfollow">
+						<div class="user-icon">
+							<i class="iconfont icon-icon-guanzhu"></i>
+						</div>
+						<div class="item-title">我的关注</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div>
+					<div class="item-content" id="mysubsidy">
+						<div class="user-icon">
+							<i class="iconfont icon-butie"></i>
+						</div>
+						<div class="item-title">我的补贴</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div>
+				</div>
+
+				<div class="list-user">
+					<!-- 	<div class="item-content">
+						<div class="user-icon">
+							<i class="iconfont icon-weixin"></i>
+						</div>
+						<div class="item-title">已绑定【赵安良 】</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div> -->
+					<div class="item-content" id="my_phone">
+						<div class="user-icon">
+							<i class="iconfont icon-shouji"></i>
+						</div>
+						<div class="item-title">更换手机</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div>
+				</div>
+
+				<div class="list-user">
+					<div class="item-content" id="mystore">
+						<div class="user-icon">
+							<i class="iconfont icon-mendian"></i>
+						</div>
+						<div class="item-title">我的门店</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div>
+					<!-- <div class="item-content">
+						<div class="user-icon">
+							<i class="iconfont icon-shouji"></i>
+						</div>
+						<div class="item-title">下载App</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div> -->
+					<div class="item-content" id="about">
+						<div class="user-icon">
+							<i class="iconfont icon-guanyu"></i>
+						</div>
+						<div class="item-title">关于我们</div>
+						<div class="user-icon-right">
+							<i class="mui-icon mui-icon-arrowright"></i>
+						</div>
+					</div>
+				</div>
+
+				<div class="login-bottom" id="loginout_handle">退出登录</div>
+
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.init();
+		mui.ready(function() {
+			if(!checkLogin())
+			{
+				location.href="../login.html?ref=user.html";
+				return;
+			}
+			var wxUser = getWxItem();
+
+			document.getElementById("userimg").setAttribute("src",allUrl+"/head/"+ wxUser.headimgurl);
+			document.getElementById("username").innerHTML = wxUser.username;
+			document.getElementById("userphone").innerHTML = wxUser.phone;
+			mui(".mui-bar ").on("tap", "#my_job", function() {
+				location.href = "../index.html";
+			})
+			/**
+			 * 我的信息
+			 */
+			document.getElementById("myinfo_handle").addEventListener("tap", function() {
+				location.href = "myinfo.html";
+			})
+			/**
+			 * 我的余额
+			 */
+			mui(".list-user").on("tap", "#mybalance", function() {
+				location.href = "balance.html";
+			})
+			/**
+			 * 绑定补贴卡
+			 */
+			mui(".list-user").on("tap", "#mybankcard", function() {
+				location.href = "bankcard.html";
+			})
+			/**
+			 * 我的工作
+			 */
+			mui(".list-user").on("tap", "#mywork", function() {
+				location.href = "jobapplys.html";
+			})
+			/**
+			 * 我的关注
+			 */
+			mui(".list-user").on("tap", "#myfollow", function() {
+				location.href = "follow.html";
+			})
+			/**
+			 * 我的补贴
+			 */
+			mui(".list-user").on("tap", "#mysubsidy", function() {
+				location.href = "subsidy.html";
+			})
+			/**
+			 * 更换手机号码
+			 */
+			document.getElementById("my_phone").addEventListener("tap",function(){
+				location.href = "phone.html";
+			})
+			/**
+			 * 我的门店
+			 */
+			mui(".list-user").on("tap", "#mystore", function() {
+				location.href = "store.html";
+			})
+			/**
+			 * 关于我们
+			 */
+			mui(".list-user").on("tap", "#about", function() {
+				location.href = "about.html";
+			})
+			/**
+			 * 退出登录
+			 */
+			document.getElementById("loginout_handle").addEventListener("tap", function() {
+				window.localStorage.removeItem("hjct_user");
+				location.href="../login.html?ref=user.html";
+			})
+		})
+	</script>
+</html>
