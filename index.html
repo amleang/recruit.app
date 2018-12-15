@@ -583,12 +583,12 @@
 											var gjdiv = document.createElement("div");
 											gjdiv.setAttribute("class", "item-right");
 											var tempHtml =
-												"<div class='btn-one' style='background: #859199!important;'>已停招</div><div class='btn-span'>";
+												"<div class='btn-one' style='background: #859199!important;'>已停招</div>";
 											if (item.type == 1)
-												tempHtml += item.laborPrice + "元/小时";
+												tempHtml += "<div class='btn-span'>" + item.laborPrice + "元/小时</div>";
 											else if (item.type == 2)
-												tempHtml += item.subsidyExplain;
-											tempHtml += "</div>";
+												tempHtml += "<div class='btn-span'>" + item.subsidyExplain + "</div>";
+
 											gjdiv.innerHTML = tempHtml;
 											itemdiv.appendChild(gjdiv);
 										}
@@ -661,11 +661,11 @@
 											var gjdiv = document.createElement("div");
 											gjdiv.setAttribute("class", "item-right");
 											var tempHtml =
-												"<div class='btn-one' style='background: #859199!important;'>已停招</div><div class='btn-span'>";
+												"<div class='btn-one' style='background: #859199!important;'>已停招</div>";
 											if (item.type == 1)
-												tempHtml += item.laborPrice + "元/小时";
+												tempHtml += "<div class='btn-span'>" + item.laborPrice + "元/小时</div>";
 											else if (item.type == 2)
-												tempHtml += item.subsidyExplain;
+												tempHtml += "<div class='btn-span'>" + item.subsidyExplain + "</div>";
 											tempHtml += "</div>";
 
 											gjdiv.innerHTML = tempHtml;
