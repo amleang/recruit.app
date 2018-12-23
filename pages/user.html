@@ -313,8 +313,13 @@
 			 * 退出登录
 			 */
 			document.getElementById("loginout_handle").addEventListener("tap", function() {
-				window.localStorage.removeItem("hjct_user");
-				location.href = "../login.html?ref=user.html";
+				mui.confirm("确定要退出吗？", "系统提示", ["取消", "确定"], function(d) {
+					if (d.index == 1) {
+						window.localStorage.removeItem("hjct_user");
+						location.href = "../login.html?ref=user.html";
+					}
+				}, "div");
+
 			})
 		})
 	</script>

@@ -257,7 +257,7 @@
 			.nav-index-foat {
 				position: fixed;
 				right: 0.3rem;
-				bottom: 2rem;
+				bottom: 4.5rem;
 				z-index: 9999999;
 			}
 
@@ -309,6 +309,71 @@
 				margin-left: -0.3rem;
 				margin-top: 0.15rem;
 			}
+
+			.home-text {
+				height: 0.7rem;
+				line-height: 0.7rem;
+				font-size: 0.45rem;
+			}
+
+			.display {
+				display: none;
+			}
+
+			.daytuijian {
+				position: absolute;
+				top: 1.8rem;
+				left: 1rem;
+				width: 3.6rem;
+				border-radius: 0.1rem;
+				border: 0.03rem solid #bdbdbd;
+				border-bottom: none;
+				overflow: auto;
+				z-index: 9;
+				background-color: #fff;
+			}
+
+			.daytuijian .name-title {
+				background-color: rgba(255, 98, 98, 0.85);
+				margin: 0;
+				border-bottom: 1px solid #bdbdbd;
+				font-size: 0.4rem;
+				line-height: 0.7rem;
+				padding: 0 0.3rem;
+				color: #333;
+				height: 0.7rem;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				text-align: center;
+				font-weight: bold;
+			}
+
+			.day-tuijian-title {
+				margin: 0;
+				border-bottom: 1px solid #bdbdbd;
+				font-size: 0.4rem;
+				line-height: 0.7rem;
+				padding: 0 0.3rem;
+				color: #333;
+				height: 0.7rem;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+
+			.day-tuijian-price {
+				margin: 0;
+				border-bottom: 1px solid #bdbdbd;
+				font-size: 0.4rem;
+				line-height: 0.7rem;
+				padding: 0 0.3rem;
+				color: #333;
+				height: 0.7rem;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
 		</style>
 
 	</head>
@@ -338,6 +403,11 @@
 				<img src="images/01.3.jpg">
 			</div>
 			<div class="main-win">
+				<div class="daytuijian display jrtj" id="daytuijian">
+					<div class="name-title jrtj">今日推荐</div>
+					<div class="day-tuijian-title jrtj" id="dayname"></div>
+					<div class="day-tuijian-price jrtj" id="dayprice"></div>
+				</div>
 				<div class="mui-slider" id="slider_top">
 
 				</div>
@@ -359,13 +429,19 @@
 				</p>
 			</div>
 			<div id="listSearch" class="bar bar-header-secondary" style="top:0;">
-				<div class="searchbar searchbar-active" style="background-color: #fff;">
+				<div id="searchdiv1" class="searchbar searchbar-active" style="background-color: #fff;">
 					<a class="searchbar-cancel" id="searchhandle">搜索</a>
 					<div class="search-input">
 						<label class="search-label mui-icon mui-icon-search"></label>
 						<input type="search" id="search" name="jobName" placeholder="搜索岗位名称或关键字">
 					</div>
 				</div>
+				<!-- <div id="searchdiv2" class="searchbar searchbar-active" style="background-color: #fff;">
+					<a class="searchbar-cancel" id="showsearch">搜索</a>
+					<div class="search-input home-text">
+						苏州德聚仁合信息招工网
+					</div>
+				</div> -->
 			</div>
 
 		</div>
@@ -482,6 +558,13 @@
 
 								var sliderdiv = document.getElementById("slider_top");
 								var strHtml = [];
+								if (topImgList.length > 0) {
+									document.getElementById("dayname").innerHTML = topImgList[0].name;
+									document.getElementById("dayprice").innerHTML = topImgList[0].salaryStart + "-" + topImgList[0].salaryEnd +
+										"元";
+									document.getElementById("daytuijian").classList.remove("display");
+									document.getElementById("daytuijian").setAttribute("attr-id",topImgList[0].id)
+								}
 								if (topImgList.length > 1) {
 									strHtml.push("<div class='mui-slider-group mui-slider-loop'>");
 									strHtml.push("	<div class='mui-slider-item mui-slider-item-duplicate'>");
@@ -690,7 +773,13 @@
 					return;
 				}
 			}
-
+// 			/**
+// 			 * 显示搜索信息
+// 			 */
+// 			document.getElementById("showsearch").addEventListener("tap", function() {
+// 				document.getElementById("searchdiv1").classList.remove("display");
+// 				document.getElementById("searchdiv2").classList.add("display");
+// 			})
 			/**
 			 * 搜索
 			 */
@@ -703,6 +792,11 @@
 				document.getElementById("listitem").innerHTML = "";
 				load_handle();
 			});
+			document.getElementById("daytuijian").addEventListener("tap",function(){
+				var id = this.getAttribute("attr-id");
+				location.href = "pages/jobdetail.html?id=" + id;
+			})
+			
 			load_handle();
 			var istuijian = false;
 			window.addEventListener("scroll", () => {
@@ -718,7 +812,7 @@
 				//scrollTop是浏览器滚动条的top位置，
 				var scrollTop =
 					document.body.scrollTop || document.documentElement.scrollTop;
-				if (document.body.scrollTop > 70) {
+				if (scrollTop > 70) {
 					if (!istuijian) {
 						istuijian = true;
 						document.getElementById("tuijian_handle").classList.remove("dispaly");
